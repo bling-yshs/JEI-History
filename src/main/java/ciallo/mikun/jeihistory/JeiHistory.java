@@ -18,7 +18,7 @@ import org.slf4j.Logger;
 public class JeiHistory {
 
     public static final String MODID = "jeihistory";
-    private static final Logger LOGGER = LogUtils.getLogger();
+
     public JeiHistory() {
         IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
 

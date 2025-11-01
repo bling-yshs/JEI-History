@@ -157,7 +157,7 @@ public class HistoryIngredientListGrid extends IngredientGrid {
 
         if (++timer > 60) {
             timer = 0;
-           // 331 28 421 208
+            // 331 28 421 208
             // 259 28 421 208
         }
 
@@ -230,10 +230,8 @@ public class HistoryIngredientListGrid extends IngredientGrid {
         if (clientConfig.isShowCreativeTabNamesEnabled()) {
             ItemStack itemStack = typedIngredient.getItemStack().orElse(ItemStack.EMPTY);
             if (!itemStack.isEmpty()) {
-                Iterator var5 = CreativeModeTabs.allTabs().iterator();
 
-                while (var5.hasNext()) {
-                    CreativeModeTab itemGroup = (CreativeModeTab) var5.next();
+                for (CreativeModeTab itemGroup : CreativeModeTabs.allTabs()) {
                     if (itemGroup.shouldDisplay() && itemGroup.getType() == CreativeModeTab.Type.CATEGORY && itemGroup.contains(itemStack)) {
                         Component displayName = itemGroup.getDisplayName();
                         tooltipBuilder.add(displayName.copy().withStyle(ChatFormatting.BLUE));
@@ -356,22 +354,17 @@ public class HistoryIngredientListGrid extends IngredientGrid {
     }
 
     public <T> void addHistory(@NotNull ITypedIngredient<T> ingredient) {
-        if (ingredient != null) {
-            ITypedIngredient<T> normalized = TypedIngredient.normalize(ingredient, this.accessor.getIngredientManager().getIngredientHelper(ingredient.getType()));
-            if (normalized != null) {
-                ingredient = normalized;
-                IIngredientHelper<T> ingredientHelper = this.accessor.getIngredientManager().getIngredientHelper(ingredient.getType());
-                String uniqueId = ingredientHelper.getUniqueId(ingredient.getIngredient(), UidContext.Ingredient);
-                @NotNull ITypedIngredient<T> value = ingredient;
-                historyIngredientsList.removeIf(element -> equal(ingredientHelper, value, uniqueId, element.getTypedIngredient()));
-                IngredientElement<T> ingredientElement = new IngredientElement<>(ingredient);
-                historyIngredientsList.add(0, ingredientElement);
-                if (historyIngredientsList.size() > historyMaxSize) {
-                    historyIngredientsList.remove(historyMaxSize);
-                }
-                historyIngredientSlotRenderer.set(0, historyIngredientsList);
-            }
+        ingredient = TypedIngredient.normalize(ingredient, this.accessor.getIngredientManager().getIngredientHelper(ingredient.getType()));
+        IIngredientHelper<T> ingredientHelper = this.accessor.getIngredientManager().getIngredientHelper(ingredient.getType());
+        String uniqueId = ingredientHelper.getUniqueId(ingredient.getIngredient(), UidContext.Ingredient);
+        @NotNull ITypedIngredient<T> value = ingredient;
+        historyIngredientsList.removeIf(element -> equal(ingredientHelper, value, uniqueId, element.getTypedIngredient()));
+        IngredientElement<T> ingredientElement = new IngredientElement<>(ingredient);
+        historyIngredientsList.add(0, ingredientElement);
+        if (historyIngredientsList.size() > historyMaxSize) {
+            historyIngredientsList.remove(historyMaxSize);
         }
+        historyIngredientSlotRenderer.set(0, historyIngredientsList);
     }
 
     private static <T> boolean equal(IIngredientHelper<T> ingredientHelper, @NotNull ITypedIngredient<T> a, String uidA, @NotNull ITypedIngredient<?> b) {
@@ -380,11 +373,7 @@ public class HistoryIngredientListGrid extends IngredientGrid {
         }
 
         if (a.getIngredient() instanceof ItemStack itemStackA && b.getIngredient() instanceof ItemStack itemStackB) {
-            if (true) {
-                return itemStackA.equals(itemStackB, true);
-            } else {
-                return ItemStack.isSameItem(itemStackA, itemStackB);
-            }
+            return itemStackA.equals(itemStackB, true);
         }
 
         Optional<T> filteredB = b.getIngredient(a.getType());
